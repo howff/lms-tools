@@ -1,2 +1,67 @@
 # lms-tools
 Tools for home automation with squeezebox/Logitech media server
+
+# Introduction
+
+You want to be able to stream your own personal music (mp3) files to devices in your home
+(such as a Hi-Fi, Chromecast, Chromecast audio, etc) and you want to be able to choose
+which music by speaking into your home assistant (such as a Google Home assistant).
+
+e.g. voice control of music streamed from your local NAS to your Chromecast.
+
+You could use a different device instead of a Chromecast (such as your Hi-Fi or a SqueezeBox) in which case you don't use the CastBridge plugin.
+
+# Diagram
+
+You -> Google Home Assistant -> IFTTT -> This jukebox server -> LMS -> local MP3 collection -> CastBridge plugin -> Chromecast
+
+* You say "OK Google, jukebox play Dua Lipa"
+* The Google Home Assistant sends the words to IFTTT which recognises the trigger word "jukebox"
+* The rest "play Dua Lipa" is forwarded to a server running on your computer
+* The server converts the words into a "play" command for the Logitech Music Server
+* LMS searches for "Dua Lipa" and adds all the songs to the playlist
+* LMS then uses the CastBridge plugin to stream the music to your Chromecast
+
+# Requirements
+
+* Logitech Music Server software running on your computer
+* Configure your router to forward a port to your computer
+* CastBridge plugin if streaming to a Chromecast or Chromecast Audio
+* Account on IFTTT website
+
+# Installation
+
+1. Install Logitech Media Server, index your collection of music files
+2. Install the CastBridge plugin and configure it to stream to your Chromecast
+3. Test all of the above works before proceeding
+4. Create an applet on IFTTT:
+ * When you say "jukebox play $"
+ * Respond with "righty-ho"
+ * Make a web request with method POST
+ * Content-type: application/json
+ * Body: { "command": "play", "parameter": "{{TextField}}" }
+ * http://IPADDR:18127/api/services/media_player
+ * use your own IP address instead of IPADDR, or use a name if you've configured Dynamic DNS service
+ * actually the /api/... stuff isn't needed in this version because the command is in the body
+ * make sure it's http and not https
+5. Configure your router to pass external internet-facing port 18127 to local port 8127 (for example) to your computer so that when IFTTT tries to connect to IPADDR port 18127 your router passes the request to your local computer and port 8127.
+6. Edit the file jukebox_ifttt_to_lms.py then make it executable with chmod
+7. Run the jukebox_ifttt_to_lms.py script to start the local server
+8. You can make other IFTTT applets to pause and stop by changing the command in the body
+
+# Configuration
+
+Edit the script to change the port numbers, IP address of your LMS server, etc.
+
+# References
+
+LMS http://wiki.slimdevices.com/index.php/Main_Page
+
+LMS downloads http://downloads.slimdevices.com/LogitechMediaServer_v7.9.2/
+
+LMS CastBridge plugin https://github.com/philippe44/LMS-to-Cast
+
+IFTTT https://ifttt.com/
+
+CLI docs https://github.com/elParaguayo/LMS-CLI-Documentation/blob/master/LMS-CLI.md#0.1_PC
+(more up to date in LMS docs though)
