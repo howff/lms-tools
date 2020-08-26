@@ -17,9 +17,11 @@ You -> Google Home Assistant -> IFTTT -> This jukebox server -> LMS -> local MP3
 
 * You say "OK Google, jukebox play Dua Lipa"
 * The Google Home Assistant sends the words to IFTTT which recognises the trigger word "jukebox"
-* The rest "play Dua Lipa" is forwarded to a server running on your computer
-* The server converts the words into a "play" command for the Logitech Music Server
+* The rest "play Dua Lipa" is forwarded to a server (this jukebox script) running on your computer
+* The server converts the words into a "search" command for the Logitech Music Server
 * LMS searches for "Dua Lipa" and adds all the songs to the playlist
+* The server then sends a "play" command to the Logitech Music Server
+* LMS starts to play the playlist
 * LMS then uses the CastBridge plugin to stream the music to your Chromecast
 
 # Requirements
@@ -52,6 +54,12 @@ You -> Google Home Assistant -> IFTTT -> This jukebox server -> LMS -> local MP3
 # Configuration
 
 Edit the script to change the port numbers, IP address of your LMS server, etc.
+
+You will need to find the castbridge plugin config to get the MAC address, see the file such as `/var/lib/squeezeboxserver/prefs/castbridge.xml` (maybe you can also see this in the plugin configuration page of LMS) and find the `<mac>` line - use the value between the `<mac>` and `</mac>` inside the jukebox script.
+
+You will need to change the castbridge plugin so it doesn't remove devices after a timeout - in the plugin configuration page set the remove timeout to -1 or by editing the castbridge.xml file add `<remove_timeout>-1</remove_timeout>` in the `common` section.
+
+You can only command a single device so if you have multiple players you will need extra changes, but log a github issue if you want that feature.
 
 # References
 
