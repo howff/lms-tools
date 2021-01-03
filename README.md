@@ -37,19 +37,20 @@ You -> Google Home Assistant -> IFTTT -> This jukebox server -> LMS -> local MP3
 2. Install the CastBridge plugin and configure it to stream to your Chromecast
 3. Test all of the above works before proceeding
 4. Create an applet on IFTTT:
- * When you say "jukebox play $"
+ * When you say "jukebox $"
  * Respond with "righty-ho"
  * Make a web request with method POST
  * Content-type: application/json
- * Body: { "command": "play", "parameter": "{{TextField}}" }
- * http://IPADDR:18127/api/services/media_player
+ * Body: { "command": "jukebox", "parameter": "{{TextField}}" }
+ * http://IPADDR:18123/api/services/media_player
  * use your own IP address instead of IPADDR, or use a name if you've configured Dynamic DNS service
  * actually the /api/... stuff isn't needed in this version because the command is in the body
  * make sure it's http and not https
-5. Configure your router to pass external internet-facing port 18127 to local port 8127 (for example) to your computer so that when IFTTT tries to connect to IPADDR port 18127 your router passes the request to your local computer and port 8127.
-6. Edit the file jukebox_ifttt_to_lms.py then make it executable with chmod
-7. Run the jukebox_ifttt_to_lms.py script to start the local server
-8. You can make other IFTTT applets to pause and stop by changing the command in the body
+5. Configure your router to pass external internet-facing port 18123 to local port 8123 (for example) to your computer so that when IFTTT tries to connect to IPADDR port 18127 your router passes the request to your local computer and port 8127. You could make them the same number if you wish but this slightly obscures the purpose for hackers.
+6. Edit the file jukebox_ifttt_to_lms.py if necessary
+7. then make it executable with `chmod +x jukebox_ifttt_to_lms.py`
+8. Run the jukebox_ifttt_to_lms.py script to start the local server. Run it in the background using `./jukebox_ifttt_to_lms.py &`
+9. The log file will contain the requests and commands, or use the `-d` option to see that in the terminal.
 
 # Configuration
 
@@ -60,6 +61,8 @@ You will need to find the castbridge plugin config to get the MAC address, see t
 You will need to change the castbridge plugin so it doesn't remove devices after a timeout - in the plugin configuration page set the remove timeout to -1 or by editing the castbridge.xml file add `<remove_timeout>-1</remove_timeout>` in the `common` section.
 
 You can only command a single device so if you have multiple players you will need extra changes, but log a github issue if you want that feature.
+
+You can create a castbridge.xml file at the command line using something like: `/var/lib/squeezeboxserver/cache/InstalledPlugins/Plugins/CastBridge/Bin/squeeze2cast-x86-64-static -i /tmp/castbridge.xml`
 
 # References
 
