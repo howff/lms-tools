@@ -40,12 +40,29 @@ player_mac = {}
 
 # Read the LMS Castbridge plugin to get the list of players and their ids (MAC addresses)
 def read_castbridge_players():
-    """ Fills in player_mac dict with the mac address of the named player """
+    """ Fills in player_mac dict with the mac addresses of all the named players
+    read from the castbridge_xml file """
     for elem in XML.parse(castbridge_xml).getroot().findall('device'):
         player_mac[elem.find('name').text] = elem.find('mac').text
 
 
+def lms_response_to_dict(response):
+    # The response is a string of words like name1:value1 name2:value2
+    # except the colon is %3A. Luckily spaces in values are encoded as %20
+    # which makes each tuple a distinct space-separated word.
+    # XXX this doesn't work given a mac address of course.
+    responsedict = {}
+    for word in response.split():
+        if '%3A' in word:
+            (name,value) = word.replace('%20',' ').split('%3A', maxsplit=1)
+            responsedict[name] = value
+    return responsedict
+
 def send_command_to_media_server(cmd):
+    """ Opens a telnet connection to the Logitech Media Server
+    and sends the given command which must have a trailing \n
+    Returns the response as a string.
+    """
     logging.info('connecting to media server at %s:%s' % (lms_cli_ip_num, lms_cli_ip_port))
     logging.debug('using player %s' % player_id)
     outsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -71,16 +88,7 @@ def jukebox_getNumTracks():
     This is used to detect if a 'clear' has worked, and to detect if a search has worked.
     """
     reply = send_command_to_media_server('%s status 0 19\n' % player_id)
-    replydict = {}
-    # The response is a string of words like name1:value1 name2:value2
-    # except the colon is %3A. Luckily spaces in values are encoded as %20.
-    for word in reply.split():
-        if '%3A' in word:
-            wordlist = word.split('%3A')
-            name = re.sub('%20', ' ', wordlist[0])
-            value = re.sub('%20', ' ', wordlist[1])
-            replydict[name] = value
-            #print('set %s = %s' % (name, value))
+    replydict = lms_response_to_dict(reply)
     return int(replydict.get('playlist_tracks', '-1'))
 
 
