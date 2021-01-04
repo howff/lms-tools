@@ -29,7 +29,7 @@ default_player_id = 'cc:cc:5c:56:cb:58'
 lms_cli_ip_num = '192.168.1.30' # where the LMS server is running, probably localhost 127.0.0.1
 lms_cli_ip_port = 9090          # which port LMS listens for telnet commands, normally 9090
 ifttt_trigger_port_num = 8123   # the local port number, not the one exposed to the internet
-log_file_name = 'jukebox_ifttt_to_lms.log'
+log_file_name = '/var/log/jukebox_ifttt_to_lms.log'
 castbridge_xml = '/var/lib/squeezeboxserver/prefs/castbridge.xml'
 debug = False
 
