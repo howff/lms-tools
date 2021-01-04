@@ -52,6 +52,9 @@ You -> Google Home Assistant -> IFTTT -> This jukebox server -> LMS -> local MP3
 8. Run the jukebox_ifttt_to_lms.py script to start the local server. Run it in the background using `./jukebox_ifttt_to_lms.py &`
 9. The log file will contain the requests and commands, or use the `-d` option to see that in the terminal.
 
+To install as a service: edit `jukebox_ifttt_to_lms.service` with the full path to the script, then
+`sudo cp jukebox_ifttt_to_lms.service /etc/systemd/system/` and then `systemctl enable jukebox_ifttt_to_lms.service`
+
 # Configuration
 
 Edit the script to change the port numbers, IP address of your LMS server, etc.

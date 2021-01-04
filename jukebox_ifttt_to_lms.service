@@ -1,0 +1,11 @@
+[Unit]
+Description=Logitech Media Server voice assistant
+
+[Service]
+Type=oneshot
+ExecStart=/home/arb/src/lms-tools/jukebox_ifttt_to_lms.sh start
+ExecStop=/home/arb/src/lms-tools/jukebox_ifttt_to_lms.sh stop
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
