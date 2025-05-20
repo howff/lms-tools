@@ -1,5 +1,5 @@
 # lms-tools
-Tools for home automation with squeezebox/Logitech media server
+Tools for home automation with Squeezebox/Logitech/Lyrion media server
 
 # Introduction
 
